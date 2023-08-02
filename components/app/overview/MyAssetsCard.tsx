@@ -9,10 +9,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Database } from "@/utils/types/supabaseTypes";
 import Link from "next/link";
 
+type Token = Database["public"]["Tables"]["stocks"]["Row"];
+
 type MyAssetsProps = {
-  tokens: Array<any>;
+  tokens: Token[] | null;
 };
 
 const MyAssets = ({ tokens }: MyAssetsProps) => {
@@ -58,7 +61,10 @@ const MyAssets = ({ tokens }: MyAssetsProps) => {
                         className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                       >
                         <Avatar className="h-9 w-9">
-                          <AvatarImage src={token.image_url} alt={token.name} />
+                          <AvatarImage
+                            src={token.image_url!}
+                            alt={token.name}
+                          />
                           <AvatarFallback>{token.symbol}</AvatarFallback>
                         </Avatar>
                       </th>
