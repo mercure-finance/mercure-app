@@ -1,13 +1,13 @@
 import AffiliateProgram from "@/components/app/overview/AffiliateProgramCard";
 import LearnMore from "@/components/app/overview/LearnMoreCard";
 import MyAssets from "@/components/app/overview/MyAssetsCard";
+import { OrderHistory } from "@/components/app/overview/OrderHistoryCard";
 import TotalValue from "@/components/app/overview/TotalValueCard";
-import WalletConnectButton from "@/components/general/walletadapter/WalletConnectButton";
 import { createSupabaseServerComponentClient } from "@/utils/supabaseServerComponentClient";
 import { Database } from "@/utils/types/supabaseTypes";
 import { Connection, PublicKey } from "@solana/web3.js";
 
-const connection = new Connection("https://api.devnet.solana.com");
+const connection = new Connection("http://localhost:8899");
 
 type Token = Database["public"]["Tables"]["stocks"]["Row"];
 
@@ -35,16 +35,29 @@ const OverviewPage = async () => {
         return null;
       }
 
+      console.log(profile.wallet_address);
+
       const heliusKey = process.env.NEXT_PUBLIC_HELIUS_API_KEY! as string;
       const url = `https://api.helius.xyz/v0/addresses/${profile.wallet_address}/balances?api-key=${heliusKey}`;
-      const response = await fetch(url);
-      const data = await response.json();
-      let tokens = new Set<string>(
-        data.tokens?.map((item: { mint: string }) => item.mint)
+
+      const data = await connection.getParsedTokenAccountsByOwner(
+        new PublicKey(profile.wallet_address),
+        {
+          programId: new PublicKey(
+            "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+          ),
+        }
       );
+
+      let tokens = new Set<string>(
+        data.value.map((item) => item.account.data.parsed.info.mint)
+      );
+      console.log("TOKEN HELD LIST", tokens);
       const filteredList = stocks!.filter((stock) =>
         tokens.has(stock.address!)
       );
+      console.log(stocks);
+      console.log("FILTERED LIST", filteredList);
 
       return filteredList;
     };
@@ -64,7 +77,9 @@ const OverviewPage = async () => {
           <LearnMore />
           <AffiliateProgram />
         </div>
-        <div className="w-full"></div>
+      </div>
+      <div className="w-full">
+        <OrderHistory />
       </div>
     </div>
   );
