@@ -22,7 +22,7 @@ const MyAssets = ({ tokens }: MyAssetsProps) => {
   console.log("tokens from MyAssets", tokens);
 
   return (
-    <div>
+    <div className="h-full">
       <Card className="mt-2">
         <CardHeader>
           <CardTitle>My Portfolio</CardTitle>

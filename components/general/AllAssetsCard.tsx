@@ -100,7 +100,7 @@ export const columns: ColumnDef<Stock>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const symbol = row.original.id;
+      const symbol = row.original.symbol;
 
       return (
         <Link href={`/app/trade/buy/${symbol}`}>
@@ -221,7 +221,7 @@ export function AllassetsCard() {
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
-                  key={row.id}
+                  key={row.original.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (

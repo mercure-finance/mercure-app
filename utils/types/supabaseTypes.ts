@@ -27,6 +27,49 @@ export interface Database {
         };
         Relationships: [];
       };
+      orders: {
+        Row: {
+          created_at: string;
+          id: string;
+          price: number;
+          status: string | null;
+          stock: string;
+          type: string;
+          user: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          price: number;
+          status?: string | null;
+          stock: string;
+          type: string;
+          user: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          price?: number;
+          status?: string | null;
+          stock?: string;
+          type?: string;
+          user?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "orders_stock_fkey";
+            columns: ["stock"];
+            referencedRelation: "stocks";
+            referencedColumns: ["symbol"];
+          },
+          {
+            foreignKeyName: "orders_user_fkey";
+            columns: ["user"];
+            referencedRelation: "users";
+            referencedColumns: ["wallet_address"];
+          }
+        ];
+      };
       stocks: {
         Row: {
           address: string | null;
