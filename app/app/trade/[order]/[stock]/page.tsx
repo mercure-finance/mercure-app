@@ -4,6 +4,7 @@ import { supabaseClient } from "@/utils/supabaseClient";
 
 import { Button } from "@solana/wallet-adapter-react-ui/lib/types/Button";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { Input } from "postcss";
 
 type BuyOrSell = "buy" | "sell";
@@ -23,6 +24,7 @@ const StockTradePage = async ({
 
   if (!stock) {
     // throw 404
+    notFound();
   }
   const { data: trendingStocks, error: trendingStocksError } =
     await supabaseClient.from("stocks").select("*");
