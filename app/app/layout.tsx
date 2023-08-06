@@ -19,7 +19,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
       <div className="flex flex-col md:flex-row h-screen min-w-full bg-white dark:bg-slate-900">
         <aside
           id="sidebar"
-          className="hidden md:block md:left-0 md:top-0 md:w-4/12 z-40 h-auto md:h-screen "
+          className="hidden md:block md:left-0 md:top-0 md:w-3/12 lg:w-3/12 z-40 h-auto md:h-screen md:fixed"
           aria-label="Sidebar"
         >
           <div className="flex h-auto md:h-full flex-col overflow-y-auto md:border-r border-slate-200  px-3 py-4 dark:border-slate-700 dark:bg-slate-900 bg-indigo-600">
@@ -123,7 +123,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
 
         <CompleteRegistrationModal />
 
-        <div className="w-full space-y-2 p-3 pt-4 mt-1 -md:space-y-4 md:p-8 md:pt-6 pb-24">
+        <div className="md:w-9/12 md:ml-auto space-y-2 p-3 pt-4 mt-1  -md:space-y-4 md:p-8 md:pt-6 pb-24">
           {children}
         </div>
       </div>
