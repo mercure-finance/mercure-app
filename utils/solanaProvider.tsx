@@ -19,6 +19,7 @@ export function useSolanaProvider(): Provider | undefined {
       setProvider(
         new AnchorProvider(connection, wallet, {
           commitment: "confirmed",
+          skipPreflight: false,
         })
       );
     }
