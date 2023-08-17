@@ -4,7 +4,7 @@ import { supabaseClient } from "@/utils/supabaseClient";
 import { useWallet } from "@solana/wallet-adapter-react";
 
 export interface UserProfile {
-  name: string;
+  name: string | null;
   kyc: boolean;
   wallet_address: string;
 }
