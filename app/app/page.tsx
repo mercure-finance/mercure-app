@@ -73,13 +73,13 @@ const OverviewPage = async () => {
           <TotalValue />
           <MyAssets tokens={tokens ?? []} />
         </div>
-        <div className="col-span-1 md:col-span-3 ml-3">
+        <div className="col-span-1 md:col-span-3 md:ml-3">
           <LearnMore />
           <AffiliateProgram />
         </div>
       </div>
       <div className="w-full">
-        <OrderHistory />
+        <OrderHistory stocks={null} />
       </div>
     </div>
   );
