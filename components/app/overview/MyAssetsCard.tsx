@@ -56,7 +56,10 @@ const MyAssets = ({ tokens }: MyAssetsProps) => {
                 <tbody>
                   {tokens &&
                     tokens.map((token) => (
-                      <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-slate-200">
+                      <tr
+                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-slate-200"
+                        key={token.symbol}
+                      >
                         <th
                           scope="row"
                           className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
@@ -81,7 +84,7 @@ const MyAssets = ({ tokens }: MyAssetsProps) => {
             </div>
           ) : (
             <div>
-              <p>You don't own any tokenized stocks. </p>
+              <p>You do not own any tokenized stocks. </p>
               <Button className="bg-indigo-600 mt-2">
                 Purchase your first stock!
               </Button>
