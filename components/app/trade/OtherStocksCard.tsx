@@ -41,7 +41,7 @@ const OtherStocks = ({ stocks }: OtherStocksProps) => {
         <div className="space-y-8">
           {stocks &&
             stocks.map((stock) => (
-              <div className="flex items-center">
+              <div className="flex items-center" key={stock.symbol}>
                 <Avatar className="h-9 w-9">
                   <AvatarImage src={stock.image_url!} alt={stock.name} />
                   <AvatarFallback>{stock.symbol}</AvatarFallback>
