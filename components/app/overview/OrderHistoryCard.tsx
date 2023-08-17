@@ -54,15 +54,21 @@ export const columns: ColumnDef<Order>[] = [
   {
     accessorKey: "stock",
     header: () => <div className="">Stock</div>,
-    cell: ({ row }) => (
-      <div className="flex items-center">
-        <Avatar className="h-9 w-9">
-          <AvatarImage src={"hi"} alt={row.getValue("name")} />
-          <AvatarFallback>{row.getValue("symbol")}</AvatarFallback>
-        </Avatar>
-        <h1 className="ml-1 font-medium uppercase">{row.original.stock}</h1>
-      </div>
-    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex items-center">
+          <Avatar className="h-7 w-7">
+            <AvatarImage
+              // @ts-ignore
+              src={row.original.stocks.image_url}
+              alt={row.original.stock}
+            />
+            <AvatarFallback>{row.getValue("symbol")}</AvatarFallback>
+          </Avatar>
+          <h1 className="ml-2 font-medium uppercase">{row.original.stock}</h1>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "type",
@@ -77,7 +83,7 @@ export const columns: ColumnDef<Order>[] = [
     accessorKey: "price",
     header: () => <div className="">Price</div>,
     cell: ({ row }) => {
-      const price = parseFloat(row.getValue("price"));
+      const price = parseFloat(row.getValue("price")) / 10 ** 6;
 
       // Format the amount as a dollar amount
       const formatted = new Intl.NumberFormat("en-US", {
@@ -167,7 +173,11 @@ export const columns: ColumnDef<Order>[] = [
   },
 ];
 
-export function OrderHistory() {
+interface OrderHistoryProps {
+  stocks: string | null;
+}
+
+export function OrderHistory({ stocks }: OrderHistoryProps) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -187,10 +197,16 @@ export function OrderHistory() {
       if (!session.profile?.wallet_address) return;
       const userId = session.profile?.wallet_address;
       console.log("USER ID", userId);
-      const { data: orders, error: fetchOrdersError } = await supabaseClient
+      let orderQuery = supabaseClient
         .from("orders")
-        .select("*")
+        .select("*, stocks(*)")
         .eq("user", userId);
+
+      if (stocks !== null) {
+        orderQuery = orderQuery.eq("stock", stocks);
+      }
+
+      const { data: orders, error: fetchOrdersError } = await orderQuery;
 
       console.log("ORDERS", orders);
 
@@ -279,7 +295,10 @@ export function OrderHistory() {
                     colSpan={columns.length}
                     className="h-24 text-center"
                   >
-                    No results.
+                    No recent orders. Start trading{" "}
+                    <Link href={"/app/trade"}>
+                      <p className="text-indigo-600">here.</p>
+                    </Link>
                   </TableCell>
                 </TableRow>
               )}
