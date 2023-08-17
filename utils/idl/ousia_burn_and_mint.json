@@ -78,6 +78,12 @@
         {
           "name": "id",
           "type": "publicKey"
+        },
+        {
+          "name": "orderType",
+          "type": {
+            "defined": "OrderType"
+          }
         }
       ]
     }
@@ -103,6 +109,28 @@
           {
             "name": "owner",
             "type": "publicKey"
+          },
+          {
+            "name": "orderType",
+            "type": {
+              "defined": "OrderType"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "OrderType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Buy"
+          },
+          {
+            "name": "Sell"
           }
         ]
       }
@@ -130,6 +158,18 @@
         {
           "name": "orderAccount",
           "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "signer",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "orderType",
+          "type": {
+            "defined": "OrderType"
+          },
           "index": false
         }
       ]
