@@ -1,3 +1,4 @@
+import { OrderHistory } from "@/components/app/overview/OrderHistoryCard";
 import OrderForm from "@/components/app/trade/OrderForm";
 import OtherStocks from "@/components/app/trade/OtherStocksCard";
 import { supabaseClient } from "@/utils/supabaseClient";
@@ -39,6 +40,9 @@ const StockTradePage = async ({
         <div className="w-full md:ml-2 mt-2 md:mt-0 col-span-4">
           <OtherStocks stocks={trendingStocks} />
         </div>
+      </div>
+      <div className="w-full">
+        <OrderHistory stocks={params.stock} />
       </div>
     </div>
   );
