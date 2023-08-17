@@ -142,7 +142,7 @@ const OrderForm = () => {
             </div>
             <Separator orientation="horizontal" className="" />
             <div className="space-y-1 mb-2">
-              <Label htmlFor="username">You're buying</Label>
+              <Label htmlFor="username">You are buying</Label>
               <div className="p-4 h-[72px] border-slate-400 border relative dark:bg-v2-background-dark rounded-md flex flex-col space-y-3 group focus-within:border-v2-primary/50 focus-within:shadow-swap-input-dark">
                 <div className="flex">
                   <div className="flex justify-between items-center group/select">
@@ -210,7 +210,7 @@ const OrderForm = () => {
             </div>
             <Separator orientation="horizontal" className="" />
             <div className="space-y-1 mb-2">
-              <Label htmlFor="username">You're buying</Label>
+              <Label htmlFor="username">You will receive</Label>
               <div className="p-4 h-[72px] border-slate-400 border relative dark:bg-v2-background-dark rounded-md flex flex-col space-y-3 group focus-within:border-v2-primary/50 focus-within:shadow-swap-input-dark">
                 <div className="flex">
                   <div className="flex justify-between items-center group/select">

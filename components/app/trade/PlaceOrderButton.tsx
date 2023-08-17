@@ -13,6 +13,9 @@ import {
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import { OusiaBurnAndMint } from "@/utils/idl/ousia-burn-and-mint";
+import { useToast } from "@/components/ui/use-toast";
+import { ToastAction } from "@/components/ui/toast";
+import { useRouter } from "next/navigation";
 
 type PlaceOrderProps = {
   orderType: "buy" | "sell";
@@ -28,6 +31,8 @@ const PlaceOrder = ({ orderType, amounts }: PlaceOrderProps) => {
   const session = useSession();
   const provider = useSolanaProvider();
   const wallet = useAnchorWallet();
+  const router = useRouter();
+  const { toast: notify } = useToast();
 
   const createOrder = async (orderType: string) => {
     console.log(`Order type: ${orderType}`);
@@ -38,7 +43,7 @@ const PlaceOrder = ({ orderType, amounts }: PlaceOrderProps) => {
     if (!amounts.price) return;
     const program = new anchor.Program<OusiaBurnAndMint>(
       idl as any,
-      new anchor.web3.PublicKey("H9yJTx5fEDrj4TNRcANdoPQzhBuDzehYEi48kTiirTxo"),
+      new anchor.web3.PublicKey("Fa63c9tRsE3uJ3GQ7q22KAWq38pq4tfyR2AkqpCprgay"),
       provider
     );
 
@@ -110,7 +115,7 @@ const PlaceOrder = ({ orderType, amounts }: PlaceOrderProps) => {
     const price = new anchor.BN(parsedPrice);
     const amount = new anchor.BN(amounts.amount!);
 
-    const tx = await program.methods
+    const signature = await program.methods
       .placeBuyOrder(amount, price, orderID.publicKey, order)
       .accounts({
         usdcMintAccount: usdcPublicKey,
@@ -128,9 +133,24 @@ const PlaceOrder = ({ orderType, amounts }: PlaceOrderProps) => {
         orderAccountPurchaseTokenAccount: orderPurchaseATA,
         systemProgram: anchor.web3.SystemProgram.programId,
       })
-      .rpc({ skipPreflight: false });
+      .rpc();
 
-    console.log(tx, "TRANSACTION SIGNATURE");
+    notify({
+      title: "Transaction submitted",
+      description: "Friday, February 10, 2023 at 5:57 PM",
+      action: (
+        <ToastAction
+          altText="Transaction signature"
+          onClick={() =>
+            router.push(`https://explorer.solana.com/tx/${signature}`)
+          }
+        >
+          View
+        </ToastAction>
+      ),
+    });
+
+    console.log(signature, "TRANSACTION SIGNATURE");
   };
 
   console.log(amounts);
