@@ -1,5 +1,6 @@
 import WalletConnectButton from "@/components/general/walletadapter/WalletConnectButton";
 import CompleteRegistrationModal from "@/components/general/walletadapter/kyc/CompleteRegistrationModal";
+import { Toaster } from "@/components/ui/toaster";
 
 import {
   CommandIcon,
@@ -10,10 +11,40 @@ import {
   PackageIcon,
   ArrowLeftRightIcon,
   InfoIcon,
+  Settings2Icon,
 } from "lucide-react";
+import { headers } from "next/headers";
 import Link from "next/link";
 
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
+  const tabs = [
+    {
+      name: "Home",
+      icon: <HomeIcon color="white" />,
+      route: "/app",
+    },
+    {
+      name: "Trade",
+      icon: <ArrowLeftRightIcon color="white" />,
+      route: "/app/trade",
+    },
+    {
+      name: "Earn",
+      icon: <HomeIcon color="white" />,
+      route: "/app/earn",
+    },
+    {
+      name: "Settings",
+      icon: <SettingsIcon color="white" />,
+      route: "/app/settings",
+    },
+  ];
+
+  const headersList = headers();
+
+  const path = headersList.get("x-pathname");
+  console.log(path);
+
   return (
     <body className="w-screen h-screen">
       <div className="flex flex-col md:flex-row h-screen min-w-full bg-white dark:bg-slate-900">
@@ -32,39 +63,25 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
               </div>
             </Link>
             <ul className="space-y-2 text-sm font-medium">
-              <li>
-                <a
-                  href="/app"
-                  className="flex items-center rounded-lg px-4 py-3 text-slate-900 bg-indigo-800 dark:text-white dark:hover:bg-slate-700"
-                >
-                  <HomeIcon color="white" />
-                  <span className="ml-3 flex-1 whitespace-nowrap text-base text-white">
-                    Home
-                  </span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/app/trade"
-                  className="flex items-center rounded-lg px-4 py-3 text-slate-900 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-700"
-                >
-                  <ArrowLeftRightIcon color="white" />
-                  <span className="ml-3 flex-1 whitespace-nowrap text-base text-white">
-                    Trade
-                  </span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="flex items-center rounded-lg px-4 py-3 text-slate-900 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-700"
-                >
-                  <SettingsIcon color="white" />
-                  <span className="ml-3 flex-1 whitespace-nowrap text-base text-white">
-                    Settings
-                  </span>
-                </a>
-              </li>
+              {tabs.map((tab) => (
+                <li key={tab.route}>
+                  <a
+                    href={tab.route}
+                    className={`flex items-center rounded-lg px-4 py-3 text-slate-900 
+        ${
+          (path!.startsWith(`${tab.route}/`) && tab.route != "/app") ||
+          tab.route === path
+            ? "bg-indigo-800"
+            : "hover:bg-indigo-800"
+        } dark:text-white dark:hover:bg-slate-700 `}
+                  >
+                    {tab.icon}
+                    <span className="ml-3 flex-1 whitespace-nowrap text-base text-white">
+                      {tab.name}
+                    </span>
+                  </a>
+                </li>
+              ))}
             </ul>
             <div className="mt-auto flex">
               <div className="flex w-full justify-between">
@@ -127,6 +144,8 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
           {children}
         </div>
       </div>
+
+      <Toaster />
     </body>
   );
 };
