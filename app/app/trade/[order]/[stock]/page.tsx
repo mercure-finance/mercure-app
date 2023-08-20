@@ -35,7 +35,7 @@ const StockTradePage = async ({
       <h1 className="text-3xl font-bold mb-4">Trade</h1>
       <div className="grid grid-cols-1 md:grid-cols-9">
         <div className="w-full md:col-span-5">
-          <OrderForm />
+          <OrderForm stock={params.stock} />
         </div>
         <div className="w-full md:ml-2 mt-2 md:mt-0 col-span-4">
           <OtherStocks stocks={trendingStocks} />
