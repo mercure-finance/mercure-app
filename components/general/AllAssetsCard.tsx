@@ -130,11 +130,36 @@ export function AllassetsCard() {
         .order("name", { ascending: true });
 
       if (stocks) {
-        setData(stocks);
+        // Get the symbols for the stocks
+        const stockSymbols = stocks.map((stock) => stock.symbol).join(",");
+
+        // Fetch prices for the stock symbols
+        const pricesResponse = await fetch(
+          `https://financialmodelingprep.com/api/v3/quote/${stockSymbols}?apikey=5a42405748c14ba82ed54f948f455c94`
+        );
+        const pricesData = await pricesResponse.json();
+
+        // Create a map for easy lookup of prices based on symbols
+        const pricesMap: { [key: string]: number } = {};
+        for (let priceInfo of pricesData) {
+          pricesMap[priceInfo.symbol] = priceInfo.price;
+        }
+
+        // Add prices to stocks data
+        const stocksWithData = stocks.map((stock) => {
+          return {
+            ...stock,
+            price: pricesMap[stock.symbol] || null,
+          };
+        });
+
+        setData(stocksWithData);
       }
     };
     fetchStocks();
   }, []);
+
+  console.log(data);
 
   const table = useReactTable({
     data,
