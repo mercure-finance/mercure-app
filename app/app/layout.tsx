@@ -12,6 +12,7 @@ import {
   ArrowLeftRightIcon,
   InfoIcon,
   Settings2Icon,
+  PiggyBankIcon,
 } from "lucide-react";
 import { headers } from "next/headers";
 import Link from "next/link";
@@ -30,7 +31,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
     },
     {
       name: "Earn",
-      icon: <HomeIcon color="white" />,
+      icon: <PiggyBankIcon color="white" />,
       route: "/app/earn",
     },
     {
@@ -99,42 +100,19 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
           aria-label="Mobile navbar"
         >
           <div className="grid h-full max-w-lg grid-cols-4 mx-auto font-medium mt-1">
-            <button
-              type="button"
-              className="inline-flex flex-col items-center justify-center px-5 hover:bg-slate-200 rounded-md py-2 group"
-            >
-              <HomeIcon color="white" />
-              <span className="flex-1 whitespace-nowrap text-sm text-white">
-                Home
-              </span>
-            </button>
-            <button
-              type="button"
-              className="inline-flex flex-col items-center justify-center px-5 hover:bg-slate-200 rounded-md py-2 group"
-            >
-              <ArrowLeftRightIcon color="white" />
-              <span className="flex-1 whitespace-nowrap text-sm text-white">
-                Trade
-              </span>
-            </button>
-            <button
-              type="button"
-              className="inline-flex flex-col items-center justify-center px-5 hover:bg-slate-200 rounded-md py-2 group"
-            >
-              <SettingsIcon color="white" />
-              <span className="flex-1 whitespace-nowrap text-sm text-white">
-                Settings
-              </span>
-            </button>
-            <button
-              type="button"
-              className="inline-flex flex-col items-center justify-center px-5 hover:bg-slate-200 rounded-md py-2 group"
-            >
-              <InfoIcon color="white" />
-              <span className="flex-1 whitespace-nowrap text-sm text-white">
-                Info
-              </span>
-            </button>
+            {tabs.map((tab) => (
+              <Link href={tab.route} key={tab.route}>
+                <button
+                  type="button"
+                  className="inline-flex flex-col items-center justify-center px-5 hover:bg-indigo-800 rounded-md py-2 group"
+                >
+                  {tab.icon}
+                  <span className="flex-1 whitespace-nowrap text-sm text-white">
+                    {tab.name}
+                  </span>
+                </button>
+              </Link>
+            ))}
           </div>
         </aside>
 
