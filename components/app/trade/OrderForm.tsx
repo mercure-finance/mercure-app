@@ -22,11 +22,16 @@ import {
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import { OusiaBurnAndMint } from "@/utils/idl/ousia-burn-and-mint";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const OrderForm = () => {
+interface OrderFormProps {
+  stock: string;
+}
+
+const OrderForm = ({ stock }: OrderFormProps) => {
   const provider = useSolanaProvider();
   const wallet = useAnchorWallet();
+  const [currentStockPrice, setCurrentStockPrice] = useState<number>();
 
   interface Amounts {
     purchaseAmount: number | undefined;
@@ -36,10 +41,10 @@ const OrderForm = () => {
   }
 
   const [amounts, setAmounts] = useState<Amounts>({
-    purchaseAmount: undefined,
-    sellAmount: undefined,
-    purchasePrice: undefined,
-    sellPrice: undefined,
+    purchaseAmount: 0,
+    sellAmount: 0,
+    purchasePrice: "0",
+    sellPrice: "0",
   });
 
   const handleChange = (
@@ -74,7 +79,11 @@ const OrderForm = () => {
   };
 
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value;
+    let inputValue = e.target.value;
+
+    // Convert commas to dots
+    inputValue = inputValue.replace(/,/g, ".");
+
     if (inputValue === "") {
       setAmounts({
         ...amounts,
@@ -90,6 +99,18 @@ const OrderForm = () => {
       sellPrice: inputValue,
     });
   };
+
+  useEffect(() => {
+    const fetchStockPrice = async () => {
+      const response = await fetch(
+        `https://financialmodelingprep.com/api/v3/quote/${stock}?apikey=5a42405748c14ba82ed54f948f455c94`
+      );
+      const data = await response.json();
+      console.log(data);
+      setCurrentStockPrice(data[0].price);
+    };
+    fetchStockPrice();
+  }, []);
 
   return (
     <Tabs defaultValue="account" className="w-full">
@@ -110,20 +131,37 @@ const OrderForm = () => {
                 <div className="flex">
                   <div className="flex justify-between items-center group/select">
                     <button className="py-2 px-3 h-10 rounded-xl flex space-x-3 items-center bg-white dark:bg-v2-background border dark:group-hover/select:border-v2-primary/50 dark:group-hover/select:bg-[rgba(199,242,132,0.2)] dark:group-hover/select:shadow-swap-input-dark border-transparent">
-                      TSLA
+                      {stock}
                     </button>
                     <input
                       placeholder="0"
                       className="h-full w-full bg-transparent disabled:cursor-not-allowed disabled:opacity-100 disabled:text-black dark:text-white text-right font-semibold dark:placeholder:text-white/25 text-base md:text-xl outline-none"
                       onChange={(e) => handleChange(e, "buy")}
-                      value={amounts.purchaseAmount}
+                      value={
+                        amounts.purchaseAmount !== 0
+                          ? amounts.purchaseAmount
+                          : ""
+                      }
                     />
                   </div>
                 </div>
               </div>
             </div>
             <div className="space-y-1 ">
-              <Label htmlFor="username">Buy TSLA at rate</Label>
+              <div className="flex justify-between">
+                <Label htmlFor="username">Buy {stock} at rate</Label>
+                <button
+                  className="bg-indigo-600 text-sm p-1 text-white"
+                  onClick={() =>
+                    setAmounts({
+                      ...amounts,
+                      purchasePrice: currentStockPrice?.toString(),
+                    })
+                  }
+                >
+                  Use market price
+                </button>
+              </div>
               <div className="p-4 h-[72px] border-slate-400 border relative dark:bg-v2-background-dark rounded-md flex flex-col space-y-3 group focus-within:border-v2-primary/50 focus-within:shadow-swap-input-dark">
                 <div className="flex">
                   <div className="flex justify-between items-center group/select">
@@ -134,7 +172,11 @@ const OrderForm = () => {
                       placeholder="0.00"
                       className="h-full w-full bg-transparent disabled:cursor-not-allowed disabled:opacity-100 disabled:text-black dark:text-white text-right font-semibold dark:placeholder:text-white/25 text-base md:text-xl outline-none"
                       onChange={(e) => handlePriceChange(e)}
-                      value={amounts.purchasePrice}
+                      value={
+                        amounts.purchasePrice !== "0"
+                          ? amounts.purchasePrice
+                          : ""
+                      }
                     />
                   </div>
                 </div>
@@ -142,7 +184,7 @@ const OrderForm = () => {
             </div>
             <Separator orientation="horizontal" className="" />
             <div className="space-y-1 mb-2">
-              <Label htmlFor="username">You are buying</Label>
+              <Label htmlFor="username">You are paying</Label>
               <div className="p-4 h-[72px] border-slate-400 border relative dark:bg-v2-background-dark rounded-md flex flex-col space-y-3 group focus-within:border-v2-primary/50 focus-within:shadow-swap-input-dark">
                 <div className="flex">
                   <div className="flex justify-between items-center group/select">
@@ -150,6 +192,11 @@ const OrderForm = () => {
                       USDC
                     </button>
                     <input
+                      value={
+                        (amounts.purchaseAmount ? amounts.purchaseAmount : 0) *
+                          Number(amounts.purchasePrice) ?? 0
+                      }
+                      disabled
                       placeholder="0.00"
                       className="h-full w-full bg-transparent disabled:cursor-not-allowed disabled:opacity-100 disabled:text-black dark:text-white text-right font-semibold dark:placeholder:text-white/25 text-base md:text-xl outline-none"
                     />
@@ -178,20 +225,33 @@ const OrderForm = () => {
                 <div className="flex">
                   <div className="flex justify-between items-center group/select">
                     <button className="py-2 px-3 h-10 rounded-xl flex space-x-3 items-center bg-white dark:bg-v2-background border dark:group-hover/select:border-v2-primary/50 dark:group-hover/select:bg-[rgba(199,242,132,0.2)] dark:group-hover/select:shadow-swap-input-dark border-transparent">
-                      TSLA
+                      {stock}
                     </button>
                     <input
                       placeholder="0"
                       className="h-full w-full bg-transparent disabled:cursor-not-allowed disabled:opacity-100 disabled:text-black dark:text-white text-right font-semibold dark:placeholder:text-white/25 text-base md:text-xl outline-none"
                       onChange={(e) => handleChange(e, "sell")}
-                      value={amounts.sellAmount}
+                      value={amounts.sellAmount !== 0 ? amounts.sellAmount : ""}
                     />
                   </div>
                 </div>
               </div>
             </div>
             <div className="space-y-1 ">
-              <Label htmlFor="username">Buy TSLA at rate</Label>
+              <div className="flex justify-between">
+                <Label htmlFor="username">Buy {stock} at rate</Label>
+                <button
+                  className="bg-indigo-600 text-sm p-1 text-white"
+                  onClick={() =>
+                    setAmounts({
+                      ...amounts,
+                      sellPrice: currentStockPrice?.toString(),
+                    })
+                  }
+                >
+                  Use market price
+                </button>
+              </div>
               <div className="p-4 h-[72px] border-slate-400 border relative dark:bg-v2-background-dark rounded-md flex flex-col space-y-3 group focus-within:border-v2-primary/50 focus-within:shadow-swap-input-dark">
                 <div className="flex">
                   <div className="flex justify-between items-center group/select">
@@ -202,7 +262,7 @@ const OrderForm = () => {
                       placeholder="0.00"
                       className="h-full w-full bg-transparent disabled:cursor-not-allowed disabled:opacity-100 disabled:text-black dark:text-white text-right font-semibold dark:placeholder:text-white/25 text-base md:text-xl outline-none"
                       onChange={(e) => handlePriceChange(e)}
-                      value={amounts.sellPrice}
+                      value={amounts.sellPrice !== "0" ? amounts.sellPrice : ""}
                     />
                   </div>
                 </div>
@@ -218,6 +278,12 @@ const OrderForm = () => {
                       USDC
                     </button>
                     <input
+                      value={
+                        amounts.sellAmount
+                          ? amounts.sellAmount
+                          : 0 * Number(amounts.sellPrice)
+                      }
+                      disabled
                       placeholder="0.00"
                       className="h-full w-full bg-transparent disabled:cursor-not-allowed disabled:opacity-100 disabled:text-black dark:text-white text-right font-semibold dark:placeholder:text-white/25 text-base md:text-xl outline-none"
                     />
