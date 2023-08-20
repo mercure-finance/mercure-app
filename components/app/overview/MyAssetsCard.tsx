@@ -1,3 +1,4 @@
+"use client";
 import WalletConnectButton from "@/components/general/walletadapter/WalletConnectButton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,10 @@ import {
 } from "@/components/ui/card";
 import { Database } from "@/utils/types/supabaseTypes";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { supabaseClient } from "@/utils/supabaseClient";
+import { use, useEffect } from "react";
+import { revalidatePath } from "next/cache";
 
 type Token = Database["public"]["Tables"]["stocks"]["Row"];
 
@@ -20,6 +25,19 @@ type MyAssetsProps = {
 
 const MyAssets = ({ tokens }: MyAssetsProps) => {
   console.log("tokens from MyAssets", tokens);
+  const router = useRouter();
+
+  useEffect(() => {
+    const {
+      data: { subscription },
+    } = supabaseClient.auth.onAuthStateChange(() => {
+      router.refresh();
+    });
+
+    return () => {
+      subscription?.unsubscribe();
+    };
+  }, []);
 
   return (
     <div className="h-full">
@@ -72,11 +90,26 @@ const MyAssets = ({ tokens }: MyAssetsProps) => {
                             <AvatarFallback>{token.symbol}</AvatarFallback>
                           </Avatar>
                         </th>
-
                         <td className="px-6 py-4">{token.symbol}</td>
-                        <td className="px-6 py-4">1 {token.symbol}</td>
-                        <td className="px-6 py-4">$234.1</td>
-                        <td className="px-6 py-4 text-red-600">112.33</td>
+                        <td className="px-6 py-4">
+                          {/* @ts-ignore */}
+                          {token.tokenAmount} {token.symbol}
+                        </td>
+                        {/* @ts-ignore */}
+                        <td className="px-6 py-4">
+                          {new Intl.NumberFormat("en-US", {
+                            style: "currency",
+                            currency: "USD",
+                            // @ts-ignore
+                          }).format(token.price * token.tokenAmount)}
+                        </td>
+                        <td className="px-6 py-4">
+                          {new Intl.NumberFormat("en-US", {
+                            style: "currency",
+                            currency: "USD",
+                            // @ts-ignore
+                          }).format(token.price)}
+                        </td>
                       </tr>
                     ))}
                 </tbody>
