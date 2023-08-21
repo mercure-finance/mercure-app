@@ -52,7 +52,7 @@ const OtherStocks = ({ stocks }: OtherStocksProps) => {
                   </p>
                   <p className="text-sm text-muted-foreground">{stock.name}</p>
                 </div>
-                <div className="ml-auto font-medium">$112.23</div>
+                <div className="ml-auto font-medium text-indigo-600">Trade</div>
               </div>
             ))}
         </div>
