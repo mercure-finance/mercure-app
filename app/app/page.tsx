@@ -49,14 +49,30 @@ const OverviewPage = async () => {
 
       const heliusKey = process.env.NEXT_PUBLIC_HELIUS_API_KEY! as string;
 
-      const data = await connection.getParsedTokenAccountsByOwner(
-        new PublicKey(profile.wallet_address),
+      const requestBody = {
+        params: [
+          profile.wallet_address,
+          {
+            programId: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+          },
+          {
+            encoding: "jsonParsed",
+          },
+        ],
+      };
+
+      const dataFetch = await fetch(
+        `https://rpc.ironforge.network/v1/devnet/getTokenAccountsByOwner?apiKey=${process.env.NEXT_PUBLIC_IRONFORGE_API_KEY}`,
         {
-          programId: new PublicKey(
-            "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
-          ),
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestBody),
         }
       );
+
+      const data = await dataFetch.json();
 
       let tokens = new Set<string>(
         data.value.map((item) => item.account.data.parsed.info.mint)
