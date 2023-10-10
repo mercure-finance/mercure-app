@@ -62,6 +62,7 @@ const CryptoSwapInput = React.forwardRef<
                 ) : (
                   filteredAssets.map((token) => (
                     <button
+                      key={token.symbol}
                       onClick={() => {
                         if (onAssetChange) onAssetChange(token.symbol); // Invoke the callback
                         setSearchTerm(""); // Clear the search term

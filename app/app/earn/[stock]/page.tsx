@@ -55,6 +55,7 @@ const StockTradePage = async ({
       <h1 className="text-3xl font-bold mb-4">
         Provide Liquidity for ${stock.symbol} on Orca
       </h1>
+
       <div className="grid grid-cols-1 md:grid-cols-9">
         <div className="w-full md:col-span-5">
           <AddLiquidityCard

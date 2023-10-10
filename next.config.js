@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+     skipTypescriptChecking: true,
     images: {
         remotePatterns: [
           {

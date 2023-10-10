@@ -117,7 +117,7 @@ const MyAssets = ({ tokens }: MyAssetsProps) => {
             </div>
           ) : (
             <div>
-              <p>You don't have any open borrows.</p>
+              <p>You do not have any open borrows.</p>
               <Button className="bg-indigo-600 mt-2">
                 Borrow your first asset
               </Button>

@@ -59,7 +59,7 @@ const CryptoSwapInput = React.forwardRef<
                 <CommandEmpty>No assets found.</CommandEmpty>
                 <CommandGroup>
                   {allTokens.map((token) => (
-                    <PopoverClose>
+                    <PopoverClose key={token}>
                       <CommandItem className="teamaspace-y-1 flex flex-col items-start px-4 py-2">
                         <p>{token}</p>
                         <p className="text-sm text-muted-foreground text-start">

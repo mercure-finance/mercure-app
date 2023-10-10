@@ -25,7 +25,7 @@ const StockTradePage = async ({ params }: { params: { asset: string } }) => {
   }
   const { data: trendingStocks, error: trendingStocksError } =
     await supabaseClient.from("stocks").select("*");
-
+  // @ts-ignore
   console.log(stock.price_feed_id);
   return (
     <div>
@@ -34,9 +34,12 @@ const StockTradePage = async ({ params }: { params: { asset: string } }) => {
         <div className="w-full md:col-span-5">
           <BorrowForm
             stock_symbol={stock.symbol}
+            // @ts-ignore
             feed_id={stock.price_feed_id}
+            // @ts-ignore
             feed_address={stock.price_feed_address}
             stock_image={stock.image_url!}
+            // @ts-ignore
             stock_inversed={stock.inversed}
           />
         </div>

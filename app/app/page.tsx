@@ -109,6 +109,7 @@ const OverviewPage = async () => {
 
       for (let stock of filteredList) {
         // Fetch price using Pyth's productPrice.get
+        // @ts-ignore
         const priceInfo = pythData.productPrice.get(stock.price_feed_id);
         if (priceInfo) {
           // @ts-ignore

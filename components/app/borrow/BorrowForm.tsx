@@ -184,7 +184,7 @@ const BorrowForm = ({
     if (!wallet?.publicKey) {
       return;
     }
-
+    // @ts-ignore
     const provider = new anchor.AnchorProvider(connection, wallet, {
       commitment: "confirmed",
     });

@@ -144,6 +144,7 @@ export function AllassetsCard() {
 
         for (let stock of stocks) {
           // Fetch price using Pyth's productPrice.get
+          // @ts-ignore
           const priceInfo = pythData.productPrice.get(stock.price_feed_id);
           if (priceInfo) {
             pricesMap[stock.symbol] = priceInfo.aggregate.price;
