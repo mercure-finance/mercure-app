@@ -12,7 +12,7 @@ import { PiggyBankIcon } from "lucide-react";
 const AffiliateProgram = () => (
   <Card className="mt-2">
     <CardHeader>
-      <CardTitle className="">Get a FREE Stock!</CardTitle>
+      <CardTitle className="">Get a FREE Asset</CardTitle>
       <CardDescription className="">
         Earn a Stock for completely free every time someone signs up with your
         refferral Code and makes their first trade !

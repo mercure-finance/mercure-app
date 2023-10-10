@@ -1,4 +1,4 @@
-import { TradeAssetsCard } from "@/components/app/trade/TradeAssetsCard";
+import { AllassetsCard } from "@/components/general/AllAssetsCard";
 import { supabaseClient } from "@/utils/supabaseClient";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -13,8 +13,8 @@ const TradePage = async () => {
 
   return (
     <div className="">
-      <h1 className="text-3xl font-bold tracking-tight">Trade</h1>
-      <TradeAssetsCard />
+      <h1 className="text-3xl font-bold tracking-tight">Borrow</h1>
+      <AllassetsCard />
     </div>
   );
 };

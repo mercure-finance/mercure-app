@@ -32,7 +32,7 @@ const OtherStocks = ({ stocks }: OtherStocksProps) => {
   return (
     <Card className="">
       <CardHeader>
-        <CardTitle>Trending Stocks</CardTitle>
+        <CardTitle>Trending Assets</CardTitle>
         <CardDescription>
           These stocks are extremely popular on our platform.
         </CardDescription>

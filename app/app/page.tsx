@@ -5,10 +5,15 @@ import { OrderHistory } from "@/components/app/overview/OrderHistoryCard";
 import TotalValue from "@/components/app/overview/TotalValueCard";
 import { createSupabaseServerComponentClient } from "@/utils/supabaseServerComponentClient";
 import { Database } from "@/utils/types/supabaseTypes";
-import { Connection, PublicKey } from "@solana/web3.js";
+import {
+  PythConnection,
+  PythHttpClient,
+  getPythProgramKeyForCluster,
+} from "@pythnetwork/client";
+import { Connection, PublicKey, clusterApiUrl } from "@solana/web3.js";
 import { revalidatePath } from "next/cache";
 
-const connection = new Connection("http://localhost:8899");
+const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
 
 export const revalidate = 100;
 
@@ -61,26 +66,30 @@ const OverviewPage = async () => {
         ],
       };
 
-      const dataFetch = await fetch(
-        `https://rpc.ironforge.network/v1/devnet/getTokenAccountsByOwner?apiKey=${process.env.NEXT_PUBLIC_IRONFORGE_API_KEY}`,
+      const data = await connection.getParsedTokenAccountsByOwner(
+        new PublicKey(profile.wallet_address),
         {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(requestBody),
+          programId: new PublicKey(
+            "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+          ),
         }
       );
 
-      const data = await dataFetch.json();
+      console.log(data);
 
       let tokens = new Set<string>(
         data.value.map((item) => item.account.data.parsed.info.mint)
       );
 
+      console.log("tokens", tokens);
+
+      console.log("tokens", stocks);
+
       const filteredList = stocks!.filter((stock) =>
         tokens.has(stock.address!)
       );
+
+      //  console.log("filtered list", filteredList);
 
       // Create a map of mint address to token amount.
       const tokenAmounts = {};
@@ -90,35 +99,26 @@ const OverviewPage = async () => {
           item.account.data.parsed.info.tokenAmount.uiAmount;
       });
 
-      // Construct the stock symbols string for the API request.
-      const stockSymbols = filteredList.map((stock) => stock.symbol).join(",");
+      const pythConnection = new PythHttpClient(
+        connection,
+        getPythProgramKeyForCluster("devnet")
+      );
 
-      let pricesData;
-      try {
-        const response = await fetch(
-          `https://financialmodelingprep.com/api/v3/quote/${stockSymbols}?apikey=5a42405748c14ba82ed54f948f455c94`
-        );
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        pricesData = await response.json();
-      } catch (error) {
-        console.error("Failed to fetch stock prices:", error);
-        return;
-      }
-
-      // Create a map of symbol to price for easy access.
+      const pythData = await pythConnection.getData();
       const pricesMap = {};
-      if (Array.isArray(pricesData)) {
-        for (let priceInfo of pricesData) {
+
+      for (let stock of filteredList) {
+        // Fetch price using Pyth's productPrice.get
+        const priceInfo = pythData.productPrice.get(stock.price_feed_id);
+        if (priceInfo) {
           // @ts-ignore
-          pricesMap[priceInfo.symbol] = priceInfo.price;
+          pricesMap[stock.symbol] = priceInfo.aggregate.price;
+        } else {
+          console.error("Price info not found for:", stock.symbol);
         }
-      } else {
-        console.error("Unexpected response format:", pricesData);
       }
 
-      // Add the price and the token amount to the filteredList.
+      // Add the price and the token amount to the filteredList
       for (let stock of filteredList) {
         // @ts-ignore
         stock.price = pricesMap[stock.symbol];

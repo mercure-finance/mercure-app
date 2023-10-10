@@ -34,7 +34,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { supabaseClient } from "@/utils/supabaseClient";
 import { Database } from "@/utils/types/supabaseTypes";
@@ -108,15 +108,15 @@ export const columns: ColumnDef<Stock>[] = [
       const symbol = row.original.symbol;
 
       return (
-        <Link href={`/app/borrow/${symbol}`}>
-          <Button className="bg-indigo-600 hover:bg-indigo-800">Borrow</Button>
+        <Link href={`/app/trade/${symbol}`}>
+          <Button className="bg-indigo-600 hover:bg-indigo-800">Trade</Button>
         </Link>
       );
     },
   },
 ];
 
-export function AllassetsCard() {
+export function TradeAssetsCard() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -133,6 +133,7 @@ export function AllassetsCard() {
         .from("stocks")
         .select("*")
         .order("name", { ascending: true });
+
       if (stocks) {
         // Fetch prices from Pyth
         const pythConnection = new PythHttpClient(

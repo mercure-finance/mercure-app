@@ -13,9 +13,11 @@ import {
   InfoIcon,
   Settings2Icon,
   PiggyBankIcon,
+  WalletCardsIcon,
 } from "lucide-react";
 import { headers } from "next/headers";
 import Link from "next/link";
+import Image from "next/image";
 
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
   const tabs = [
@@ -28,6 +30,11 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
       name: "Trade",
       icon: <ArrowLeftRightIcon color="white" />,
       route: "/app/trade",
+    },
+    {
+      name: "Borrow",
+      icon: <WalletCardsIcon color="white" />,
+      route: "/app/borrow",
     },
     {
       name: "Earn",
@@ -57,8 +64,14 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
           <div className="flex h-auto md:h-full flex-col overflow-y-auto md:border-r border-slate-200  px-3 py-4 dark:border-slate-700 dark:bg-slate-900 bg-indigo-600">
             <Link href="/app">
               <div className="mb-10 flex items-center rounded-lg px-3 py-2 text-slate-900 dark:text-white">
-                <CommandIcon color="white" />
-                <span className="ml-3 text-base font-semibold text-white">
+                <Image
+                  src="/mercure.png"
+                  width={30}
+                  height={30}
+                  alt="Mercure Logo"
+                />
+
+                <span className="ml-3 text-large font-semibold text-white">
                   Mercure
                 </span>
               </div>
@@ -86,7 +99,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
             </ul>
             <div className="mt-auto flex">
               <div className="flex w-full justify-between">
-                <span className="text-sm font-medium text-black dark:text-white">
+                <span className="text-sm font-medium text-black dark:text-white mb-40">
                   <WalletConnectButton />
                 </span>
               </div>
@@ -99,7 +112,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
           className="block md:hidden inset-x-0 bottom-0 z-50 bg-indigo-600 p-2 dark:bg-slate-900 fixed"
           aria-label="Mobile navbar"
         >
-          <div className="grid h-full max-w-lg grid-cols-4 mx-auto font-medium mt-1">
+          <div className="grid h-full max-w-lg grid-cols-5 mx-auto font-medium mt-1">
             {tabs.map((tab) => (
               <Link href={tab.route} key={tab.route}>
                 <button
