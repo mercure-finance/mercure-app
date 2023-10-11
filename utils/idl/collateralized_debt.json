@@ -26,6 +26,11 @@
           "isSigner": false
         },
         {
+          "name": "metadataAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "mintAuthority",
           "isMut": false,
           "isSigner": false
@@ -37,6 +42,16 @@
         },
         {
           "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenMetadataProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
           "isMut": false,
           "isSigner": false
         }
@@ -53,6 +68,18 @@
         {
           "name": "minCollateralRatio",
           "type": "u16"
+        },
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "symbol",
+          "type": "string"
+        },
+        {
+          "name": "uri",
+          "type": "string"
         }
       ]
     },
@@ -127,6 +154,70 @@
       ]
     },
     {
+      "name": "closePosition",
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "assetAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "positionAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "mintAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "mintAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "mintingTokenReverseQuotes",
+          "type": "bool"
+        },
+        {
+          "name": "feedPubkey",
+          "type": "publicKey"
+        },
+        {
+          "name": "createKey",
+          "type": "publicKey"
+        }
+      ]
+    },
+    {
       "name": "liquidate",
       "accounts": [
         {
@@ -180,8 +271,16 @@
             "type": "publicKey"
           },
           {
-            "name": "lastCollectedInterest",
-            "type": "i64"
+            "name": "mint",
+            "type": "publicKey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "createKey",
+            "type": "publicKey"
           }
         ]
       }

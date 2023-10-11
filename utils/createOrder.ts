@@ -32,7 +32,7 @@ const createOrder = async () => {
   const provider = await getProvider();
   const program = new anchor.Program(
     idl as anchor.Idl,
-    new anchor.web3.PublicKey(""),
+    new anchor.web3.PublicKey("EXeqAfY6BiBZbvbdGsw1EZgXapQMrJeLkGhEVCigAF6u"),
     provider
   );
 

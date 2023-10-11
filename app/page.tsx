@@ -21,11 +21,7 @@ export default function Home() {
           <div className="flex lg:flex-1">
             <a href="#" className="-m-1.5 p-1.5">
               <span className="sr-only">Your Company</span>
-              <img
-                className="h-8 w-auto"
-                src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                alt=""
-              />
+              <img className="h-8 w-auto" src="mercure.png" alt="" />
             </a>
           </div>
           <div className="flex lg:hidden">
@@ -51,7 +47,7 @@ export default function Home() {
           </div>
           <div className="hidden lg:flex lg:flex-1 lg:justify-end">
             <a
-              href="#"
+              href="/app"
               className="text-sm font-semibold leading-6 text-gray-900"
             >
               Launch App <span aria-hidden="true">&rarr;</span>
@@ -69,11 +65,7 @@ export default function Home() {
             <div className="flex items-center justify-between">
               <a href="#" className="-m-1.5 p-1.5">
                 <span className="sr-only">Your Company</span>
-                <img
-                  className="h-8 w-auto"
-                  src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                  alt=""
-                />
+                <img className="h-8 w-auto" src="mercure.png" alt="" />
               </a>
               <button
                 type="button"
@@ -132,12 +124,11 @@ export default function Home() {
           </div>
           <div className="text-center">
             <h1 className="text-4xl font-bold tracking-tight text-white sm:text-6xl">
-              Mercure is how loans should work.
+              Bringing your exposure to real world prices on chain
             </h1>
             <p className="mt-6 text-lg leading-8 text-gray-300">
               Mercure enables you to borrow assets tracked by real world prices
-              while you maintain the exposure to your portfolo, and all of that
-              in less than 3 clicks.
+              while you maintain the exposure to your portfolio.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <a

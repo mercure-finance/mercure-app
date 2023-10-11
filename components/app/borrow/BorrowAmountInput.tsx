@@ -29,8 +29,14 @@ const BorrowAmountInput = React.forwardRef<
       )}
     >
       <div className="">
-        <div className=" max-h-48 overflow-y-auto">
-          <Image src={icon} alt="Solana" width={40} height={40} />
+        <div className="max-h-48 overflow-y-auto">
+          <Image
+            src={icon}
+            alt="Solana"
+            width={40}
+            height={40}
+            className="rounded-full "
+          />
         </div>
       </div>
       <input

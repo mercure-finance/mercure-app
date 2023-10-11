@@ -43,7 +43,7 @@ const PlaceOrder = ({ orderType, amounts }: PlaceOrderProps) => {
     if (!amounts.price) return;
     const program = new anchor.Program<OusiaBurnAndMint>(
       idl as any,
-      new anchor.web3.PublicKey("Fa63c9tRsE3uJ3GQ7q22KAWq38pq4tfyR2AkqpCprgay"),
+      new anchor.web3.PublicKey("EXeqAfY6BiBZbvbdGsw1EZgXapQMrJeLkGhEVCigAF6u"),
       provider
     );
 

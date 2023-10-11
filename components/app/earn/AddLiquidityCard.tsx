@@ -25,6 +25,9 @@ import { MathUtil, DecimalUtil } from "@orca-so/common-sdk";
 import { initializePoolIx } from "@orca-so/whirlpools-sdk/dist/instructions";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/components/ui/use-toast";
+import { ToastAction } from "@/components/ui/toast";
+import { useRouter } from "next/navigation";
 
 interface TradeCardProps {
   stockAddress: string;
@@ -37,8 +40,10 @@ const TradeCard = ({ stockAddress, stockImage }: TradeCardProps) => {
   const wallet = useWallet();
   const anchorWallet = useAnchorWallet();
   const assetMint = new PublicKey(stockAddress);
+  const { toast: notify } = useToast();
   const [startPrice, setStartPrice] = useState("");
   const [endPrice, setEndPrice] = useState("");
+  const router = useRouter();
   const connection = new anchor.web3.Connection(
     "https://api.devnet.solana.com"
   );
@@ -54,11 +59,20 @@ const TradeCard = ({ stockAddress, stockImage }: TradeCardProps) => {
 
   const createPool = async () => {
     const whirlpoolClient = buildWhirlpoolClient(ctx);
-    const desiredMarketPrice = new Decimal(1);
+    console.log(startPrice);
+    const wantedPrice = parseFloat(startPrice);
+
+    console.log("invertedPrice", wantedPrice);
+    const desiredMarketPrice = new Decimal(wantedPrice);
+    console.log("desiredMarketPrice", desiredMarketPrice);
     // Invert due to token mint ordering
     const actualPrice = new Decimal(1).div(desiredMarketPrice);
+
+    console.log("actualPrice", Number(actualPrice));
+    console.log("actualPrice", actualPrice);
     // Shift by 64 bits
     const initSqrtPrice = MathUtil.toX64(actualPrice);
+    console.log("initSqrtPrice", initSqrtPrice);
     const usdcPublicKey = new PublicKey(
       "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU"
     );
@@ -70,12 +84,21 @@ const TradeCard = ({ stockAddress, stockImage }: TradeCardProps) => {
       128
     );
 
+    console.log(Number(initSqrtPrice));
+
+    const sqrt = Math.sqrt(Number(actualPrice));
+    console.log("sqrt", sqrt);
+
+    console.log(Number(MathUtil.fromX64(initSqrtPrice)));
+
+    const hey = PriceMath.priceToInitializableTickIndex(actualPrice, 6, 6, 128);
+
     const createPoolTx = await whirlpoolClient.createPool(
       new PublicKey("FcrweFY1G9HJAHG5inkGB6pKg1HZ6x9UC2WioAfWrGkR"),
       usdcPublicKey,
       assetMint,
       128,
-      Number(initSqrtPrice),
+      hey,
       wallet.publicKey!
     );
 
@@ -167,6 +190,19 @@ const TradeCard = ({ stockAddress, stockImage }: TradeCardProps) => {
       skipPreflight: true,
     });
     console.log("txId", txId);
+
+    notify({
+      title: "Transaction submitted",
+      description: "Friday, February 10, 2023 at 5:57 PM",
+      action: (
+        <ToastAction
+          altText="Transaction signature"
+          onClick={() => router.push(`https://explorer.solana.com/tx/${txId}`)}
+        >
+          View
+        </ToastAction>
+      ),
+    });
   };
 
   return (

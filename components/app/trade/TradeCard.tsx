@@ -229,7 +229,7 @@ const TradeCard = ({
         onAmountChange={(amount) => setSwapAmount(amount)}
         value={swapAmount}
       />
-      {estimatedOutput && (
+      {estimatedOutput ? (
         <div className="mt-2">
           <h2>You will receive:</h2>
           <div className="flex mt-2">
@@ -241,12 +241,21 @@ const TradeCard = ({
               className="mr-2"
             />
             <p className="font-bold text-large">
-              {Number(estimatedOutput / 10 ** 9)} {stockSymbol}
+              {Number(estimatedOutput / 10 ** 6)} {stockSymbol}
             </p>
           </div>
           <Button className="mt-4 bg-indigo-600" onClick={executeSwap}>
             {loading ? "Loading.." : "Swap"}
           </Button>
+        </div>
+      ) : (
+        <div className="mt-2">
+          {swapAmount && (
+            <p>
+              {" "}
+              Not enough liquidity, try trading another (more stable) pair.
+            </p>
+          )}
         </div>
       )}
     </div>

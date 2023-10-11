@@ -106,6 +106,7 @@ const BorrowForm = ({
 
   const [inputsCount, setInputsCount] = useState<number>(1);
   const [selectedAssets, setSelectedAssets] = useState<string[]>(["USDC"]); // Initialize with one default value
+  const [openPositions, setOpenPositions] = useState<any>([]); // Initialize with one default value
   const [inputAmounts, setInputAmounts] = useState<number[]>(
     new Array(inputsCount).fill(0)
   );
@@ -166,9 +167,71 @@ const BorrowForm = ({
 
   console.log(assets);
 
+  const fetchOpenPositions = async () => {
+    const connection = new anchor.web3.Connection(clusterApiUrl("devnet"), {
+      commitment: "confirmed",
+    });
+
+    if (!wallet?.publicKey) {
+      return;
+    }
+    // @ts-ignore
+    const provider = new anchor.AnchorProvider(connection, wallet, {
+      commitment: "confirmed",
+    });
+    const program = new anchor.Program(
+      idl as anchor.Idl,
+      new anchor.web3.PublicKey("EXeqAfY6BiBZbvbdGsw1EZgXapQMrJeLkGhEVCigAF6u"),
+      provider
+    );
+
+    console.log("this was reached");
+
+    const assetAccount = anchor.web3.PublicKey.findProgramAddressSync(
+      [
+        Buffer.from("asset"),
+        new PublicKey(feed_address!).toBuffer(),
+        Buffer.alloc(1),
+      ],
+      program.programId
+    )[0];
+
+    console.log("assetAccount", assetAccount);
+
+    const mintAccount = anchor.web3.PublicKey.findProgramAddressSync(
+      [Buffer.from("asset_account"), assetAccount.toBuffer()],
+      program.programId
+    )[0];
+
+    const allOwnerPositions = await program.account.positionAccount.all([
+      {
+        memcmp: {
+          offset: 8,
+          bytes: wallet.publicKey.toBase58(),
+        },
+      },
+      {
+        memcmp: {
+          offset: 40,
+          bytes: mintAccount.toBase58(),
+        },
+      },
+    ]);
+
+    console.log("ALL OWNER POSITIONS", allOwnerPositions);
+    setOpenPositions(allOwnerPositions);
+  };
+
   useEffect(() => {
     fetchAllPrices();
   }, []);
+
+  useEffect(() => {
+    if (!wallet?.publicKey) {
+      return;
+    }
+    fetchOpenPositions();
+  }, [wallet.publicKey]);
 
   const total = selectedAssets.reduce((acc, assetSymbol, index) => {
     const asset = assets.find((a) => a.symbol === assetSymbol);
@@ -190,7 +253,7 @@ const BorrowForm = ({
     });
     const program = new anchor.Program(
       idl as anchor.Idl,
-      new anchor.web3.PublicKey("G8w2tPQCb8667G6GxFhKcmbRgtZhvr5gxoW32N7mJsMu"),
+      new anchor.web3.PublicKey("EXeqAfY6BiBZbvbdGsw1EZgXapQMrJeLkGhEVCigAF6u"),
       provider
     );
 
@@ -308,6 +371,8 @@ const BorrowForm = ({
 
       transaction.add(createPositionATAInstuction);
 
+      console.log("amount", amount);
+
       const transferInstruction = createTransferCheckedInstruction(
         senderTokenAccount,
         assetMint,
@@ -323,8 +388,12 @@ const BorrowForm = ({
       console.log("TRANSFER INSTRUCTION added", transferInstruction);
     });
 
+    const parsedBorrowAmount = parseFloat(borrowAmount);
+    console.log("PARSED BORROW AMOUNT", parsedBorrowAmount);
+    const realBorrowAmount = parsedBorrowAmount * 10 ** 6;
+    console.log("REAL BORROW AMOUNT", realBorrowAmount);
     const instruction = await program.methods
-      .openPosition(new anchor.BN(parseFloat(borrowAmount) * 10 ** 9), false)
+      .openPosition(new anchor.BN(realBorrowAmount), false)
       .accounts({
         signer: wallet.publicKey,
         assetAccount,
@@ -351,7 +420,9 @@ const BorrowForm = ({
 
     transaction.sign(createKey);
 
-    const signature = await wallet.sendTransaction(transaction, connection);
+    const signature = await wallet.sendTransaction(transaction, connection, {
+      skipPreflight: true,
+    });
     console.log("SIG", signature);
     notify({
       title: "Transaction submitted",
@@ -369,7 +440,151 @@ const BorrowForm = ({
     });
   };
 
+  const closePosition = async (
+    positionPubkey: PublicKey,
+    createKey: PublicKey
+  ) => {
+    const connection = new anchor.web3.Connection(clusterApiUrl("devnet"), {
+      commitment: "confirmed",
+    });
+
+    if (!wallet?.publicKey) {
+      return;
+    }
+    // @ts-ignore
+    const provider = new anchor.AnchorProvider(connection, wallet, {
+      commitment: "confirmed",
+    });
+    const program = new anchor.Program(
+      idl as anchor.Idl,
+      new anchor.web3.PublicKey("EXeqAfY6BiBZbvbdGsw1EZgXapQMrJeLkGhEVCigAF6u"),
+      provider
+    );
+
+    console.log("FEED ADDRESS", feed_address!);
+    console.log("HI THIS CALLED");
+
+    let inversedQuoteBuffer = Buffer.alloc(1);
+
+    if (stock_inversed) {
+      inversedQuoteBuffer = Buffer.from([1]);
+    }
+
+    const assetAccount = anchor.web3.PublicKey.findProgramAddressSync(
+      [
+        Buffer.from("asset"),
+        new PublicKey(feed_address!).toBuffer(),
+        inversedQuoteBuffer,
+      ],
+      program.programId
+    )[0];
+
+    console.log("assetAccount", assetAccount);
+
+    const mintAccount = anchor.web3.PublicKey.findProgramAddressSync(
+      [Buffer.from("asset_account"), assetAccount.toBuffer()],
+      program.programId
+    )[0];
+
+    console.log("mintAccount", mintAccount);
+
+    const signerMintATA = anchor.web3.PublicKey.findProgramAddressSync(
+      [
+        wallet.publicKey.toBuffer(),
+        TOKEN_PROGRAM_ID.toBuffer(),
+        mintAccount.toBuffer(),
+      ],
+      ASSOCIATED_TOKEN_PROGRAM_ID
+    )[0];
+
+    console.log("FEED ADDRESS", feed_address!);
+
+    const feedPublicKey = new anchor.web3.PublicKey(feed_address);
+
+    console.log("after feed address log");
+
+    const batchRemainingAccounts = assets.flatMap((asset) => [
+      {
+        pubkey: getAssociatedTokenAddressSync(
+          new PublicKey(asset.mint),
+          positionPubkey,
+          true,
+          TOKEN_PROGRAM_ID
+        ), // Use the appropriate public key for token account here
+        isWritable: false,
+        isSigner: false,
+      },
+      {
+        pubkey: new anchor.web3.PublicKey(asset.price_feed_address),
+        isWritable: false,
+        isSigner: false,
+      },
+    ]);
+
+    console.log("After mapping batchremaining");
+
+    const mintAuthorityAccount = anchor.web3.PublicKey.findProgramAddressSync(
+      [Buffer.from("mint-authority"), mintAccount.toBuffer()],
+      program.programId
+    )[0];
+
+    const positionAccount = anchor.web3.PublicKey.findProgramAddressSync(
+      [Buffer.from("position"), assetAccount.toBuffer(), createKey.toBuffer()],
+      program.programId
+    )[0];
+
+    const transaction = new anchor.web3.Transaction();
+
+    const instruction = await program.methods
+      .closePosition(
+        stock_inversed,
+        new anchor.web3.PublicKey(feed_address!),
+        createKey
+      )
+      .accounts({
+        signer: wallet.publicKey,
+        assetAccount,
+        mintAccount,
+        mintAuthority: mintAuthorityAccount,
+        associatedTokenAccount: signerMintATA,
+        associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+        positionAccount,
+        systemProgram: anchor.web3.SystemProgram.programId,
+        tokenProgram: TOKEN_PROGRAM_ID,
+      })
+      .remainingAccounts(batchRemainingAccounts)
+      .instruction();
+
+    transaction.add(instruction);
+
+    transaction.feePayer = wallet.publicKey;
+
+    transaction.recentBlockhash = (
+      await connection.getLatestBlockhash()
+    ).blockhash;
+
+    const signature = await wallet.sendTransaction(transaction, connection, {
+      skipPreflight: true,
+    });
+    console.log("SIG", signature);
+    notify({
+      title: "Transaction submitted",
+      description: "Position closed successfully",
+      action: (
+        <ToastAction
+          altText="Transaction signature"
+          onClick={() =>
+            router.push(`https://explorer.solana.com/tx/${signature}`)
+          }
+        >
+          View
+        </ToastAction>
+      ),
+    });
+  };
+
   const SwapButton = () => {
+    console.log("totallll", total);
     return (
       <div>
         <h2 className="mb-2">
@@ -382,17 +597,17 @@ const BorrowForm = ({
             disabled={
               borrowAmount === "" ||
               total == 0 ||
-              total * 0.8 < parseFloat(borrowAmount) * borrowAssetPrice!
+              total * 0.65 < parseFloat(borrowAmount) * borrowAssetPrice!
             }
           >
             {borrowAmount === "" ||
             total == 0 ||
-            total * 0.8 < parseFloat(borrowAmount) * borrowAssetPrice!
+            total * 0.65 < parseFloat(borrowAmount) * borrowAssetPrice!
               ? "Insufficient collateral"
               : "Borrow"}
           </Button>
         ) : (
-          <WalletMultiButton />
+          <WalletMultiButton style={{ backgroundColor: "black" }} />
         )}
       </div>
     );
@@ -401,10 +616,10 @@ const BorrowForm = ({
   return (
     <Tabs defaultValue="account" className="w-full">
       <TabsList className="grid w-full grid-cols-2">
-        <TabsTrigger value="account" className="text-white bg-green-600/30">
+        <TabsTrigger value="account" className="text-white ">
           Borrow
         </TabsTrigger>
-        <TabsTrigger value="password" className="text-white bg-red-600/30">
+        <TabsTrigger value="password" className="text-white ">
           Redeem
         </TabsTrigger>
       </TabsList>
@@ -475,6 +690,42 @@ const BorrowForm = ({
           <CardFooter>
             <SwapButton />
           </CardFooter>
+        </Card>
+      </TabsContent>
+      <TabsContent value="password">
+        <Card>
+          <CardContent className="mt-5">
+            <div className="mt-3">
+              {openPositions.length === 0 ? (
+                <p>There are no open positions.</p>
+              ) : (
+                openPositions.map((position: any, index: number) => (
+                  <Card key={index} className="mb-3">
+                    <CardHeader>
+                      <h1 className="font-bold text-xl">
+                        {position.account.amount.toNumber() / 10 ** 6} $
+                        {stock_symbol}
+                      </h1>
+                    </CardHeader>
+                    <CardHeader>
+                      <Button
+                        className="bg-indigo-600 text-white "
+                        onClick={() =>
+                          closePosition(
+                            position.publicKey,
+                            position.account.createKey
+                          )
+                        }
+                      >
+                        Close Position
+                      </Button>
+                    </CardHeader>
+                  </Card>
+                ))
+              )}
+            </div>
+          </CardContent>
+          <CardFooter></CardFooter>
         </Card>
       </TabsContent>
     </Tabs>
