@@ -393,7 +393,7 @@ const BorrowForm = ({
     const realBorrowAmount = parsedBorrowAmount * 10 ** 6;
     console.log("REAL BORROW AMOUNT", realBorrowAmount);
     const instruction = await program.methods
-      .openPosition(new anchor.BN(realBorrowAmount), false)
+      .openPosition(new anchor.BN(realBorrowAmount), stock_inversed)
       .accounts({
         signer: wallet.publicKey,
         assetAccount,
