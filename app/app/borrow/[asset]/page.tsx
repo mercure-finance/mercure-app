@@ -30,7 +30,7 @@ const StockTradePage = async ({ params }: { params: { asset: string } }) => {
   return (
     <div>
       <h1 className="text-3xl font-bold mb-4">Borrow ${params.asset}</h1>
-      <p className="text-muted-foreground mb-8">
+      <p className="text-muted-foreground mb-3">
         Create a debt position referenced to the {stock.name} price.
       </p>
       <div className="grid grid-cols-1 md:grid-cols-9">

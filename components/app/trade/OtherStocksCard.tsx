@@ -34,7 +34,7 @@ const OtherStocks = ({ stocks }: OtherStocksProps) => {
       <CardHeader>
         <CardTitle>Trending Assets</CardTitle>
         <CardDescription>
-          These stocks are extremely popular on our platform.
+          These assets are extremely popular on our platform.
         </CardDescription>
       </CardHeader>
       <CardContent>
