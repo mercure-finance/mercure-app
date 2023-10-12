@@ -26,7 +26,13 @@ const nextConfig = {
             hostname: 'dev.euroe.com',
             port: '',
             pathname: '**',
-          }
+          },
+          {
+            protocol: 'https',
+            hostname: 'styles.redditmedia.com',
+            port: '',
+            pathname: '**',
+          },
         ],
       },
 }

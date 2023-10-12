@@ -105,12 +105,23 @@ const BorrowForm = ({
     {
       name: "EUROe Stablecoin",
       symbol: "EUROe",
-      mint: "2VhjJ9WxaGC3EZFwJG9BDUs9KxKCAjQY4vgd1qxgYWVg",
+      mint: "Dq4LDZPdbMaEjFdRZVANvmAd4iwTWA3WGSAkugcoHLkc",
       price_feed: "Crypto.EUROe/USD",
       decimals: 6,
       imageurl: "https://dev.euroe.com/persistent/token-icon/png/256x256.png",
       price: 1,
       price_feed_address: "C4FSVzHE38qse1Dq25bDQRzwso63LbWucxzLufn7SrkY",
+    },
+    {
+      name: "Kamino USDH/USDC",
+      symbol: "kUSDHUSDCo",
+      mint: "EvLepoDXhscvLxbTQ7byj3NE6n6gSNJP3DeZx5k49uLm",
+      price_feed: "Crypto.USDC/USD",
+      decimals: 6,
+      imageurl:
+        "https://styles.redditmedia.com/t5_6qrg6t/styles/communityIcon_92h259miw7l91.png",
+      price: 1,
+      price_feed_address: "5SSkXsEKQepHHAewytPVwdej4epN1nxgLVM84L4KXgy7",
     },
   ]);
 

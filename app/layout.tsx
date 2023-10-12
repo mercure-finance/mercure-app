@@ -5,8 +5,8 @@ import WalletAdapter from "@/components/general/walletadapter";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Ousia Finance",
-  description: "Real world assets on the blockchain",
+  title: "Mercure Finance",
+  description: "Real world prices on the blockchain",
 };
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {

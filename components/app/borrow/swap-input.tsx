@@ -44,7 +44,13 @@ const CryptoSwapInput = React.forwardRef<
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="outline" className="ml-auto bg-slate-100">
-                <Image src={tokenImage} alt="Solana" width={32} height={32} />
+                <Image
+                  src={tokenImage}
+                  alt="Solana"
+                  width={32}
+                  height={32}
+                  className="rounded-full"
+                />
                 <h2 className="font-bold ml-2">{props.tokenSymbol}</h2>
               </Button>
             </PopoverTrigger>
