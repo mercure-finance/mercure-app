@@ -34,11 +34,14 @@ const Earn = () => {
   const router = useRouter();
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-4">Earn</h1>
-
+      <h1 className="text-3xl font-bold mb-4">Earn</h1>{" "}
+      <p className="text-muted-foreground mb-4">
+        Provide liquidity for token pairs and earn a share of the Orca swap
+        fees.
+      </p>
       {assets.map((asset) => (
         // @ts-ignore
-        <Card key={asset.name}>
+        <Card key={asset.name} className="mb-2">
           <CardHeader>
             <Image
               // @ts-ignore

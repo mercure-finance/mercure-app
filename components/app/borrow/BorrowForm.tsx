@@ -123,6 +123,17 @@ const BorrowForm = ({
       price: 1,
       price_feed_address: "5SSkXsEKQepHHAewytPVwdej4epN1nxgLVM84L4KXgy7",
     },
+    {
+      name: "Hubble USD",
+      symbol: "USDH",
+      mint: "EvLepoDXhscvLxbTQ7byj3NE6n6gSNJP3DeZx5k49uLm",
+      price_feed: "Crypto.USDC/USD",
+      decimals: 6,
+      imageurl:
+        "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/USDH1SM1ojwWUga67PGrgFWUHibbjqMvuMaDkRJTgkX/usdh.svg",
+      price: 1,
+      price_feed_address: "5SSkXsEKQepHHAewytPVwdej4epN1nxgLVM84L4KXgy7",
+    },
   ]);
 
   const [inputsCount, setInputsCount] = useState<number>(1);
@@ -697,7 +708,12 @@ const BorrowForm = ({
                   />
                   {index === inputsCount - 1 && (
                     <button
-                      className="rounded-full w-10 h-10 bg-indigo-600 text-white ml-3 hover:bg-indigo-400 font-semibold text-3xl"
+                      disabled={assets.length === selectedAssets.length}
+                      className={`rounded-full w-10 h-10 bg-indigo-600 text-white ml-3 hover:bg-indigo-400 font-semibold text-3xl ${
+                        assets.length === selectedAssets.length
+                          ? "opacity-50 cursor-not-allowed"
+                          : ""
+                      }`}
                       onClick={handleAddInput}
                     >
                       +

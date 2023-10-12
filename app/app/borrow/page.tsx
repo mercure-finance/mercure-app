@@ -14,6 +14,10 @@ const TradePage = async () => {
   return (
     <div className="">
       <h1 className="text-3xl font-bold tracking-tight">Borrow</h1>
+      <p className="text-muted-foreground mt-1">
+        List of real world asset prices for which a debt position can be
+        created.
+      </p>
       <AllassetsCard />
     </div>
   );

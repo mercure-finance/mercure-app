@@ -55,7 +55,13 @@ const StockTradePage = async ({
       <h1 className="text-3xl font-bold mb-4">
         Provide Liquidity for ${stock.symbol} on Orca
       </h1>
-
+      <p className="text-muted-foreground mb-4">
+        Specify a price range in which you would like your liquidity to be
+        allocated.
+        <br />
+        You will only earn fees while the price of the debt asset on Orca is
+        within this range.
+      </p>
       <div className="grid grid-cols-1 md:grid-cols-9">
         <div className="w-full md:col-span-5">
           <AddLiquidityCard
