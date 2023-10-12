@@ -142,7 +142,9 @@ const PlaceOrder = ({ orderType, amounts }: PlaceOrderProps) => {
         <ToastAction
           altText="Transaction signature"
           onClick={() =>
-            router.push(`https://explorer.solana.com/tx/${signature}`)
+            router.push(
+              `https://explorer.solana.com/tx/${signature}?cluster=devnet`
+            )
           }
         >
           View

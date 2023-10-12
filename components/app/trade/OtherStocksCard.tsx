@@ -52,7 +52,12 @@ const OtherStocks = ({ stocks }: OtherStocksProps) => {
                   </p>
                   <p className="text-sm text-muted-foreground">{stock.name}</p>
                 </div>
-                <div className="ml-auto font-medium text-indigo-600">Trade</div>
+                <a
+                  className="ml-auto font-medium text-indigo-600"
+                  href={`/app/borrow/${stock.symbol}`}
+                >
+                  Borrow
+                </a>
               </div>
             ))}
         </div>

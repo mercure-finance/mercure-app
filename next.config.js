@@ -21,6 +21,12 @@ const nextConfig = {
             port: '',
             pathname: '**',
           },
+          {
+            protocol: 'https',
+            hostname: 'dev.euroe.com',
+            port: '',
+            pathname: '**',
+          }
         ],
       },
 }

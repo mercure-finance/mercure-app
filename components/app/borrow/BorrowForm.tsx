@@ -102,6 +102,16 @@ const BorrowForm = ({
       price: 1,
       decimals: 6,
     },
+    {
+      name: "EUROe Stablecoin",
+      symbol: "EUROe",
+      mint: "2VhjJ9WxaGC3EZFwJG9BDUs9KxKCAjQY4vgd1qxgYWVg",
+      price_feed: "Crypto.EUROe/USD",
+      decimals: 6,
+      imageurl: "https://dev.euroe.com/persistent/token-icon/png/256x256.png",
+      price: 1,
+      price_feed_address: "C4FSVzHE38qse1Dq25bDQRzwso63LbWucxzLufn7SrkY",
+    },
   ]);
 
   const [inputsCount, setInputsCount] = useState<number>(1);
@@ -187,11 +197,17 @@ const BorrowForm = ({
 
     console.log("this was reached");
 
+    let inversedQuoteBuffer = Buffer.alloc(1);
+
+    if (stock_inversed) {
+      inversedQuoteBuffer = Buffer.from([1]);
+    }
+
     const assetAccount = anchor.web3.PublicKey.findProgramAddressSync(
       [
         Buffer.from("asset"),
         new PublicKey(feed_address!).toBuffer(),
-        Buffer.alloc(1),
+        inversedQuoteBuffer,
       ],
       program.programId
     )[0];
@@ -260,11 +276,19 @@ const BorrowForm = ({
     console.log("FEED ADDRESS", feed_address!);
     console.log("HI THIS CALLED");
 
+    let inversedQuoteBuffer = Buffer.alloc(1);
+
+    if (stock_inversed) {
+      inversedQuoteBuffer = Buffer.from([1]);
+    }
+
+    console.log("BUFFER VALUE", inversedQuoteBuffer);
+
     const assetAccount = anchor.web3.PublicKey.findProgramAddressSync(
       [
         Buffer.from("asset"),
         new PublicKey(feed_address!).toBuffer(),
-        Buffer.alloc(1),
+        inversedQuoteBuffer,
       ],
       program.programId
     )[0];
@@ -431,7 +455,9 @@ const BorrowForm = ({
         <ToastAction
           altText="Transaction signature"
           onClick={() =>
-            router.push(`https://explorer.solana.com/tx/${signature}`)
+            router.push(
+              `https://explorer.solana.com/tx/${signature}?cluster=devnet`
+            )
           }
         >
           View
@@ -469,6 +495,8 @@ const BorrowForm = ({
     if (stock_inversed) {
       inversedQuoteBuffer = Buffer.from([1]);
     }
+
+    console.log("BUFFER VALUE", inversedQuoteBuffer);
 
     const assetAccount = anchor.web3.PublicKey.findProgramAddressSync(
       [
@@ -574,7 +602,9 @@ const BorrowForm = ({
         <ToastAction
           altText="Transaction signature"
           onClick={() =>
-            router.push(`https://explorer.solana.com/tx/${signature}`)
+            router.push(
+              `https://explorer.solana.com/tx/${signature}?cluster=devnet`
+            )
           }
         >
           View
