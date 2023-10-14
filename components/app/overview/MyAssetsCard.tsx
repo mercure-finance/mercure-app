@@ -45,7 +45,7 @@ const MyAssets = ({ tokens }: MyAssetsProps) => {
         <CardHeader>
           <CardTitle>My Portfolio</CardTitle>
           <CardDescription>
-            List of all tokenized stocks held in your wallet
+            List of all synthetic assets held in your wallet
           </CardDescription>
         </CardHeader>
         <CardContent>
