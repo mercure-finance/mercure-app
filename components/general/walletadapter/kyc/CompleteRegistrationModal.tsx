@@ -94,6 +94,9 @@ const CompleteRegistrationModal = () => {
             Please verify that you really own this wallet by signing a
             cryptographic message. This is not an interaction with the
             blockchain.
+            <br />
+            By signing this message you agree that Mercure is not live and that
+            no asset on Devnet has any financial value.
             <div className="mt-2">
               <WalletConnectButton />
               <Button

@@ -44,7 +44,8 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
     {
       name: "Settings",
       icon: <SettingsIcon color="white" />,
-      route: "/app/settings",
+      route: "#",
+      disabled: true,
     },
   ];
 
@@ -82,6 +83,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
                   <a
                     href={tab.route}
                     className={`flex items-center rounded-lg px-4 py-3 text-slate-900 
+                    
         ${
           (path!.startsWith(`${tab.route}/`) && tab.route != "/app") ||
           tab.route === path

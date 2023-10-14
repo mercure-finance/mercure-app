@@ -118,7 +118,10 @@ const MyAssets = ({ tokens }: MyAssetsProps) => {
           ) : (
             <div>
               <p>You do not have any open borrows.</p>
-              <Button className="bg-indigo-600 mt-2">
+              <Button
+                className="bg-indigo-600 mt-2"
+                onClick={() => router.push("/app/borrow")}
+              >
                 Borrow your first asset
               </Button>
             </div>

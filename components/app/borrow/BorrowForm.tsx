@@ -134,6 +134,26 @@ const BorrowForm = ({
       price: 1,
       price_feed_address: "5SSkXsEKQepHHAewytPVwdej4epN1nxgLVM84L4KXgy7",
     },
+    {
+      name: "Jito SOL",
+      symbol: "JITO",
+      mint: "4V11fcxxXJfCzC9ByTPbeTJt96jxKzVMEwm3bjdXGfM5",
+      price_feed: "Crypto.JITOSOL/USD",
+      decimals: 6,
+      imageurl: "https://www.jito.network/jito_sol.svg",
+      price: 1,
+      price_feed_address: "3d4eLK2TF6UdpSjKvS5ZUnDY1uZq2sEj9Tk3cujpUaAk",
+    },
+    {
+      name: "Bonk",
+      symbol: "BONK",
+      mint: "Hb3fn5G34izE7JkhWRtej9hJxrTPJrCyKteWJ7xcF5ET",
+      price_feed: "Crypto.BONK/USD",
+      decimals: 5,
+      imageurl: "https://s2.coinmarketcap.com/static/img/coins/64x64/23095.png",
+      price: 1,
+      price_feed_address: "6bquU99ktV1VRiHDr8gMhDFt3kMfhCQo5nfNrg2Urvsn",
+    },
   ]);
 
   const [inputsCount, setInputsCount] = useState<number>(1);
