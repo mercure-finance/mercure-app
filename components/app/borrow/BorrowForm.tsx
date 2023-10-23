@@ -581,7 +581,18 @@ const BorrowForm = ({
           true,
           TOKEN_PROGRAM_ID
         ), // Use the appropriate public key for token account here
-        isWritable: false,
+        isWritable: true,
+        isSigner: false,
+      },
+      {
+        pubkey: getAssociatedTokenAddressSync(
+          new PublicKey(asset.mint),
+          // @ts-ignore
+          wallet.publicKey,
+          false,
+          TOKEN_PROGRAM_ID
+        ), // Use the appropriate public key for token account here
+        isWritable: true,
         isSigner: false,
       },
       {
